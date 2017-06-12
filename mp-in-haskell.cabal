@@ -18,7 +18,6 @@ library
   exposed-modules:     MP.Dist
                      , MP.RPNCalculator
   build-depends:       base >= 4.7 && < 5
-                     , free >= 4.12.4
   default-language:    Haskell2010
 
 executable mp-in-haskell-exe
