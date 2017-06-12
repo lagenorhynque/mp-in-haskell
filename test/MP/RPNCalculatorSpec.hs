@@ -7,9 +7,6 @@ import Control.Exception
 import Test.Hspec
 
 import MP.RPNCalculator
-    ( solveRPN
-    , solveRPN'
-    )
 
 spec :: Spec
 spec = do

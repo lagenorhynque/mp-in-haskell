@@ -17,17 +17,17 @@ spec =
             doors = S.fromList ["a", "b", "c"]
             dist1 :: Probs
             dist1 = dist2probs $ do
-                prize <- uniform $ S.toList doors
-                choice <- uniform $ S.toList doors
+                prize <- uniform doors
+                choice <- uniform doors
                 return $ if prize == choice
                     then "win"
                     else "lose"
             dist2 :: Probs
             dist2 = dist2probs $ do
-                prize <- uniform $ S.toList doors
-                choice <- uniform $ S.toList doors
-                opened <- uniform . S.toList . S.difference doors $ S.fromList [prize, choice]
-                choice' <- uniform . S.toList . S.difference doors $ S.fromList [opened, choice]
+                prize <- uniform doors
+                choice <- uniform doors
+                opened <- uniform . S.difference doors $ S.fromList [prize, choice]
+                choice' <- uniform . S.difference doors $ S.fromList [opened, choice]
                 return $ if prize == choice'
                     then "win"
                     else "lose"
