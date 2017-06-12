@@ -15,14 +15,14 @@ spec =
     describe "Monty Hall problem" $ do
         let doors :: S.Set String
             doors = S.fromList ["a", "b", "c"]
-            probs1 :: Probs
+            probs1 :: Probs String
             probs1 = dist2probs $ do
                 prize <- uniform doors
                 choice <- uniform doors
                 return $ if prize == choice
                     then "win"
                     else "lose"
-            probs2 :: Probs
+            probs2 :: Probs String
             probs2 = dist2probs $ do
                 prize <- uniform doors
                 choice <- uniform doors

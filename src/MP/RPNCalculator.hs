@@ -16,7 +16,7 @@ foldingFunction (x:y:ys) "-" = (y - x) : ys
 foldingFunction (x:y:ys) "*" = (y * x) : ys
 foldingFunction xs       s   = read s  : xs
 
-solveRPN :: String -> Double
+solveRPN :: (Num a, Read a) => String -> a
 solveRPN = head . foldl foldingFunction [] . words
 
 -- with Maybe monad
@@ -26,7 +26,7 @@ readMaybe s = case reads s of
     [(x, "")] -> Just x
     _         -> Nothing
 
-foldingFunction' :: [Double] -> String -> Maybe [Double]
+foldingFunction' :: (Num a, Read a) => [a] -> String -> Maybe [a]
 foldingFunction' (x:y:ys) "+" = return $ (y + x) : ys
 foldingFunction' (x:y:ys) "-" = return $ (y - x) : ys
 foldingFunction' (x:y:ys) "*" = return $ (y * x) : ys

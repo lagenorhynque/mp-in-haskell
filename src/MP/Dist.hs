@@ -35,9 +35,9 @@ uniform xs = Dist . map (\x -> (x, 1 % n)) $ S.toList xs
   where
     n = fromIntegral $ length xs
 
-type Probs = M.Map String (Ratio Integer)
+type Probs a = M.Map a (Ratio Integer)
 
-dist2probs :: Dist String -> Probs
+dist2probs :: (Ord a) => Dist a -> Probs a
 dist2probs (Dist xs) = foldr addProb M.empty xs
   where
     addProb (x, p) = M.insertWith (+) x p
