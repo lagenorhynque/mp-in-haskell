@@ -1,8 +1,12 @@
-module MP.RPNCalculator ( solveRPN
-                        , solveRPN'
-                        ) where
+module MP.RPNCalculator
+    ( solveRPN
+    , solveRPN'
+    ) where
 
-import Control.Monad ( foldM, liftM )
+import Control.Monad
+    ( foldM
+    , liftM
+    )
 
 -- without monads
 
