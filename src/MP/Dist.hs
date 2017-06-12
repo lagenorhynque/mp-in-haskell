@@ -27,8 +27,8 @@ instance Applicative Dist where
                                             , (x, q) <- xs]
 
 instance Monad Dist where
-    m >>= f = Dist [(y, p * q) | (x, p) <- getDist m
-                               , (y, q) <- getDist $ f x]
+    Dist xs >>= f = Dist [(y, p * q) | (x, p) <- xs
+                                     , (y, q) <- getDist $ f x]
 
 uniform :: S.Set a -> Dist a
 uniform xs = Dist . map (\x -> (x, 1 % n)) $ S.toList xs
