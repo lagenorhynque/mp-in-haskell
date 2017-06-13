@@ -8,15 +8,17 @@ module MP.Dist
 import Control.Applicative
     ( Applicative
     )
+import Data.Foldable
+    ( toList
+    )
 import Data.Ratio
-    ( Ratio,
+    ( Rational,
       (%)
     )
-import qualified Data.Set as S
 
 import qualified Data.Map.Strict as M
 
-newtype Dist a = Dist { getDist :: [(a, Ratio Integer)] } deriving (Show)
+newtype Dist a = Dist { getDist :: [(a, Rational)] } deriving (Show, Eq)
 
 instance Functor Dist where
     fmap f (Dist xs) = Dist [(f x, p) | (x, p) <- xs]
@@ -30,12 +32,12 @@ instance Monad Dist where
     Dist xs >>= f = Dist [(y, p * q) | (x, p) <- xs
                                      , (y, q) <- getDist $ f x]
 
-uniform :: S.Set a -> Dist a
-uniform xs = Dist . map (\x -> (x, 1 % n)) $ S.toList xs
+uniform :: (Foldable f) => f a -> Dist a
+uniform xs = Dist . map (\x -> (x, 1 % n)) $ toList xs
   where
     n = fromIntegral $ length xs
 
-type Probs a = M.Map a (Ratio Integer)
+type Probs a = M.Map a Rational
 
 dist2probs :: (Ord a) => Dist a -> Probs a
 dist2probs (Dist xs) = foldr addProb M.empty xs
