@@ -1,7 +1,8 @@
 module MP.Dist
     ( Dist
-    , Probs
-    , dist2probs
+    , Prob
+    , distribution
+    , prob2dist
     , uniform
     ) where
 
@@ -18,28 +19,31 @@ import Data.Ratio
 
 import qualified Data.Map.Strict as M
 
-newtype Dist a = Dist { getDist :: [(a, Rational)] } deriving (Show, Eq)
+newtype Prob a = Prob { getProb :: [(a, Rational)] } deriving (Show, Eq)
 
-instance Functor Dist where
-    fmap f (Dist xs) = Dist [(f x, p) | (x, p) <- xs]
+instance Functor Prob where
+    fmap f (Prob xs) = Prob [(f x, p) | (x, p) <- xs]
 
-instance Applicative Dist where
-    pure v = Dist [(v, 1)]
-    Dist f <*> Dist xs = Dist [(g x, p * q) | (g, p) <- f
+instance Applicative Prob where
+    pure v = Prob [(v, 1)]
+    Prob f <*> Prob xs = Prob [(g x, p * q) | (g, p) <- f
                                             , (x, q) <- xs]
 
-instance Monad Dist where
-    Dist xs >>= f = Dist [(y, p * q) | (x, p) <- xs
-                                     , (y, q) <- getDist $ f x]
+instance Monad Prob where
+    Prob xs >>= f = Prob [(y, p * q) | (x, p) <- xs
+                                     , (y, q) <- getProb $ f x]
 
-uniform :: (Foldable f) => f a -> Dist a
-uniform xs = Dist . map (\x -> (x, 1 % n)) $ toList xs
+uniform :: (Foldable f) => f a -> Prob a
+uniform xs = Prob . map (\x -> (x, 1 % n)) $ toList xs
   where
     n = fromIntegral $ length xs
 
-type Probs a = M.Map a Rational
+type Dist a = M.Map a Rational
 
-dist2probs :: (Ord a) => Dist a -> Probs a
-dist2probs (Dist xs) = foldr addProb M.empty xs
+prob2dist :: (Ord a) => Prob a -> Dist a
+prob2dist (Prob xs) = foldr addProb M.empty xs
   where
     addProb (x, p) = M.insertWith (+) x p
+
+distribution :: (Ord a) => [(a, Rational)] -> Dist a
+distribution = M.fromList
