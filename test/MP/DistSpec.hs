@@ -10,7 +10,6 @@ import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck
 import Test.QuickCheck.Function
-import Test.QuickCheck.Gen
 
 import MP.Dist
 
