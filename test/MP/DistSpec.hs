@@ -1,3 +1,4 @@
+{-# LANGUAGE ViewPatterns #-}
 module MP.DistSpec where
 
 import Data.Ratio
@@ -6,6 +7,10 @@ import Data.Ratio
 import qualified Data.Set as S
 
 import Test.Hspec
+import Test.Hspec.QuickCheck
+import Test.QuickCheck
+import Test.QuickCheck.Function
+import Test.QuickCheck.Gen
 
 import MP.Dist
 
@@ -47,3 +52,22 @@ spec = do
             dist1 `shouldBe` distribution [("win", 1 % 3), ("lose", 2 % 3)]
         it "second choice" $
             dist2 `shouldBe` distribution [("win", 2 % 3), ("lose", 1 % 3)]
+    describe "Monad laws" $ do
+        prop "first monad law"
+            (monadLeftIdentityProp :: String -> Fun String (Prob Int) -> Bool)
+        prop "second monad law"
+            (monadRightIdentityProp :: Prob String -> Bool)
+        prop "third monad law"
+            (monadAssociativityProp :: Prob Int -> Fun Int (Prob String) -> Fun String (Prob Int) -> Bool)
+
+instance Arbitrary a => Arbitrary (Prob a) where
+    arbitrary = fmap Prob arbitrary
+
+monadLeftIdentityProp :: (Monad m, Eq (m b)) => a -> Fun a (m b) -> Bool
+monadLeftIdentityProp x (apply -> f) = (return x >>= f) == (f x)
+
+monadRightIdentityProp :: (Monad m, Eq (m a)) => m a -> Bool
+monadRightIdentityProp x = (x >>= return) == x
+
+monadAssociativityProp :: (Monad m, Eq (m c)) => m a -> Fun a (m b) -> Fun b (m c) -> Bool
+monadAssociativityProp x (apply -> f) (apply -> g) = ((x >>= f) >>= g) == (x >>= (\x' -> f x' >>= g))

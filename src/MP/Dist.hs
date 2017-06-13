@@ -1,6 +1,6 @@
 module MP.Dist
     ( Dist
-    , Prob
+    , Prob(..)
     , distribution
     , prob2dist
     , uniform
